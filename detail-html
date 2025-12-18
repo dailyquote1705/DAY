@@ -1,0 +1,26 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Story</title>
+</head>
+<body>
+  <a href="index.html">← Back</a>
+
+  <h2 id="quote"></h2>
+  <p id="author"></p>
+  <p id="story"></p>
+
+  <script src="quotes.js"></script>
+  <script>
+    const params = new URLSearchParams(window.location.search);
+    const id = params.get("id");
+    const q = QUOTES.find(x => x.id === id) || QUOTES[0];
+
+    document.getElementById("quote").innerText = q.text;
+    document.getElementById("author").innerText = q.author;
+    document.getElementById("story").innerText = q.story;
+  </script>
+</body>
+</html>
