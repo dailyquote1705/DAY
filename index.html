@@ -1,0 +1,26 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>DAY</title>
+</head>
+<body>
+  <h2>Today’s Quote</h2>
+
+  <p id="quote"></p>
+  <p id="author"></p>
+
+  <a id="storyLink" href="detail.html">Story behind this quote</a>
+
+  <script src="quotes.js"></script>
+  <script>
+    const day = Math.floor(Date.now() / 86400000);
+    const quote = QUOTES[day % QUOTES.length];
+
+    document.getElementById("quote").innerText = quote.text;
+    document.getElementById("author").innerText = quote.author;
+    document.getElementById("storyLink").href = "detail.html?id=" + quote.id;
+  </script>
+</body>
+</html>
