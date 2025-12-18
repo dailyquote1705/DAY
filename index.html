@@ -13,7 +13,7 @@
     .author{font-weight:800;letter-spacing:.15em}
     .sub{opacity:.6;font-weight:700;letter-spacing:.14em;font-size:12px}
     .row{display:flex;gap:14px;justify-content:center;align-items:center;margin-bottom:18px}
-    .pill{flex:1;border:none;border-radius:999px;padding:14px 18px;font-weight:800;letter-spacing:.08em;background:#fff;box-shadow:0 6px 16px rgba(0,0,0,.08);cursor:pointer}
+    .pill{flex:1;border:none;border-radius:999px;padding:14px 18px;font-weight:800;letter-spacing:.08em;background:#fff;box-shadow:0 6px 16px rgba(0,0,0,.08);cursor:pointer;text-align:center}
     .iconBtn{width:54px;height:54px;border:none;border-radius:999px;background:#fff;box-shadow:0 6px 16px rgba(0,0,0,.08);cursor:pointer;font-size:20px}
     .tabs{display:flex;gap:10px;margin-top:12px}
     .tab{flex:1;padding:14px;border-radius:14px;text-align:center;font-weight:800;background:#fff;opacity:.55;cursor:pointer}
@@ -25,7 +25,7 @@
   <div class="wrap">
     <div class="top">TODAY'S QUOTE</div>
 
-    <div class="quoteBox">
+    <div class="quoteBox" id="todayView">
       <div class="quote" id="qText">...</div>
       <div>
         <div class="author" id="qAuthor">...</div>
@@ -33,11 +33,9 @@
       </div>
     </div>
 
-    <div class="row">
+    <div class="row" id="todayActions">
       <button class="iconBtn" id="favBtn" title="Favorite">★</button>
-
       <a class="pill" id="storyBtn" href="detail.html">STORY BEHIND THIS QUOTE</a>
-
       <button class="iconBtn" id="shareBtn" title="Share">⤴</button>
     </div>
 
@@ -51,7 +49,7 @@
 
   <script src="quotes.js"></script>
   <script>
-    // 1) Quote del día (misma quote todo ese día)
+    // Quote-of-the-day (stable within the same calendar day, UTC)
     function dayNumberUTC() {
       const now = new Date();
       const utc = Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate());
@@ -63,20 +61,19 @@
       return window.QUOTES[idx];
     }
 
-    // 2) Favorites (localStorage)
+    // Favorites (stored locally on the device)
     const LS_KEY = "DAY_FAVORITES";
-    function loadFavs(){ try{return JSON.parse(localStorage.getItem(LS_KEY)||"[]");}catch(e){return []}}
+    function loadFavs(){ try{return JSON.parse(localStorage.getItem(LS_KEY)||"[]");}catch(e){return []} }
     function saveFavs(arr){ localStorage.setItem(LS_KEY, JSON.stringify(arr)); }
 
-    // Render
     const q = getQuoteOfDay();
     document.getElementById("qText").textContent = q.text;
     document.getElementById("qAuthor").textContent = q.author;
 
-    // Pasar el id a detail.html
+    // Pass quote id to detail.html
     document.getElementById("storyBtn").href = `detail.html?id=${encodeURIComponent(q.id)}`;
 
-    // Fav button
+    // Favorite star
     const favBtn = document.getElementById("favBtn");
     function syncFavStar(){
       const favs = loadFavs();
@@ -105,6 +102,8 @@
     const tabToday = document.getElementById("tabToday");
     const tabFav = document.getElementById("tabFav");
     const favList = document.getElementById("favList");
+    const todayView = document.getElementById("todayView");
+    const todayActions = document.getElementById("todayActions");
 
     function renderFavList(){
       const favs = loadFavs();
@@ -127,15 +126,15 @@
       tabToday.classList.add("active");
       tabFav.classList.remove("active");
       favList.style.display = "none";
-      document.querySelector(".quoteBox").style.display = "flex";
-      document.querySelector(".row").style.display = "flex";
+      todayView.style.display = "flex";
+      todayActions.style.display = "flex";
     });
     tabFav.addEventListener("click", () => {
       tabFav.classList.add("active");
       tabToday.classList.remove("active");
       favList.style.display = "block";
-      document.querySelector(".quoteBox").style.display = "none";
-      document.querySelector(".row").style.display = "none";
+      todayView.style.display = "none";
+      todayActions.style.display = "none";
     });
   </script>
 </body>
