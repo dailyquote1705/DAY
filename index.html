@@ -1,26 +1,142 @@
 <!doctype html>
-<html>
+<html lang="en">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>DAY</title>
+  <title>DAY — Today's Quote</title>
+  <style>
+    body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial;background:#f7f1e6;color:#111}
+    .wrap{max-width:480px;margin:0 auto;min-height:100vh;display:flex;flex-direction:column;padding:24px}
+    .top{font-weight:700;letter-spacing:.08em;text-align:center;margin-top:10px}
+    .quoteBox{flex:1;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;gap:18px;padding:30px 10px}
+    .quote{font-family:Georgia,serif;font-size:38px;line-height:1.05;font-weight:700}
+    .author{font-weight:800;letter-spacing:.15em}
+    .sub{opacity:.6;font-weight:700;letter-spacing:.14em;font-size:12px}
+    .row{display:flex;gap:14px;justify-content:center;align-items:center;margin-bottom:18px}
+    .pill{flex:1;border:none;border-radius:999px;padding:14px 18px;font-weight:800;letter-spacing:.08em;background:#fff;box-shadow:0 6px 16px rgba(0,0,0,.08);cursor:pointer}
+    .iconBtn{width:54px;height:54px;border:none;border-radius:999px;background:#fff;box-shadow:0 6px 16px rgba(0,0,0,.08);cursor:pointer;font-size:20px}
+    .tabs{display:flex;gap:10px;margin-top:12px}
+    .tab{flex:1;padding:14px;border-radius:14px;text-align:center;font-weight:800;background:#fff;opacity:.55;cursor:pointer}
+    .tab.active{background:#f3e7b8;opacity:1}
+    a{color:inherit;text-decoration:none}
+  </style>
 </head>
 <body>
-  <h2>Today’s Quote</h2>
+  <div class="wrap">
+    <div class="top">TODAY'S QUOTE</div>
 
-  <p id="quote"></p>
-  <p id="author"></p>
+    <div class="quoteBox">
+      <div class="quote" id="qText">...</div>
+      <div>
+        <div class="author" id="qAuthor">...</div>
+        <div class="sub">KEEP THIS IN MIND TODAY</div>
+      </div>
+    </div>
 
-  <a id="storyLink" href="detail.html">Story behind this quote</a>
+    <div class="row">
+      <button class="iconBtn" id="favBtn" title="Favorite">★</button>
+
+      <a class="pill" id="storyBtn" href="detail.html">STORY BEHIND THIS QUOTE</a>
+
+      <button class="iconBtn" id="shareBtn" title="Share">⤴</button>
+    </div>
+
+    <div class="tabs">
+      <div class="tab active" id="tabToday">Today's Quote</div>
+      <div class="tab" id="tabFav">Favorites</div>
+    </div>
+
+    <div id="favList" style="display:none;margin-top:14px;"></div>
+  </div>
 
   <script src="quotes.js"></script>
   <script>
-    const day = Math.floor(Date.now() / 86400000);
-    const quote = QUOTES[day % QUOTES.length];
+    // 1) Quote del día (misma quote todo ese día)
+    function dayNumberUTC() {
+      const now = new Date();
+      const utc = Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate());
+      return Math.floor(utc / 86400000);
+    }
+    function getQuoteOfDay() {
+      const n = dayNumberUTC();
+      const idx = n % window.QUOTES.length;
+      return window.QUOTES[idx];
+    }
 
-    document.getElementById("quote").innerText = quote.text;
-    document.getElementById("author").innerText = quote.author;
-    document.getElementById("storyLink").href = "detail.html?id=" + quote.id;
+    // 2) Favorites (localStorage)
+    const LS_KEY = "DAY_FAVORITES";
+    function loadFavs(){ try{return JSON.parse(localStorage.getItem(LS_KEY)||"[]");}catch(e){return []}}
+    function saveFavs(arr){ localStorage.setItem(LS_KEY, JSON.stringify(arr)); }
+
+    // Render
+    const q = getQuoteOfDay();
+    document.getElementById("qText").textContent = q.text;
+    document.getElementById("qAuthor").textContent = q.author;
+
+    // Pasar el id a detail.html
+    document.getElementById("storyBtn").href = `detail.html?id=${encodeURIComponent(q.id)}`;
+
+    // Fav button
+    const favBtn = document.getElementById("favBtn");
+    function syncFavStar(){
+      const favs = loadFavs();
+      favBtn.style.opacity = favs.includes(q.id) ? "1" : ".45";
+    }
+    favBtn.addEventListener("click", () => {
+      const favs = loadFavs();
+      const i = favs.indexOf(q.id);
+      if(i >= 0) favs.splice(i,1); else favs.push(q.id);
+      saveFavs(favs);
+      syncFavStar();
+      renderFavList();
+    });
+    syncFavStar();
+
+    // Share
+    document.getElementById("shareBtn").addEventListener("click", async () => {
+      const text = `${q.text} — ${q.author}`;
+      try{
+        if(navigator.share){ await navigator.share({ text }); }
+        else{ await navigator.clipboard.writeText(text); alert("Copied!"); }
+      }catch(e){}
+    });
+
+    // Tabs + Favorites list
+    const tabToday = document.getElementById("tabToday");
+    const tabFav = document.getElementById("tabFav");
+    const favList = document.getElementById("favList");
+
+    function renderFavList(){
+      const favs = loadFavs();
+      if(!favs.length){
+        favList.innerHTML = `<div style="opacity:.7;font-weight:700;padding:10px 6px;">No favorites yet.</div>`;
+        return;
+      }
+      const items = favs.map(id => window.QUOTES.find(x=>x.id===id)).filter(Boolean);
+      favList.innerHTML = items.map(item => `
+        <div style="background:#fff;border-radius:16px;padding:14px 14px;margin:10px 0;box-shadow:0 6px 16px rgba(0,0,0,.06)">
+          <div style="font-weight:800">${item.text}</div>
+          <div style="opacity:.7;margin-top:6px">${item.author}</div>
+          <a href="detail.html?id=${encodeURIComponent(item.id)}" style="display:inline-block;margin-top:10px;font-weight:800;opacity:.8">Open story →</a>
+        </div>
+      `).join("");
+    }
+    renderFavList();
+
+    tabToday.addEventListener("click", () => {
+      tabToday.classList.add("active");
+      tabFav.classList.remove("active");
+      favList.style.display = "none";
+      document.querySelector(".quoteBox").style.display = "flex";
+      document.querySelector(".row").style.display = "flex";
+    });
+    tabFav.addEventListener("click", () => {
+      tabFav.classList.add("active");
+      tabToday.classList.remove("active");
+      favList.style.display = "block";
+      document.querySelector(".quoteBox").style.display = "none";
+      document.querySelector(".row").style.display = "none";
+    });
   </script>
 </body>
 </html>
