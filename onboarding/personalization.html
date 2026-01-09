@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>DAY – Personalization</title>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700&amp;family=Playfair+Display:wght@400;600;700;800;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#F472B6", // Vibrant Orange
+                        "background-light": "#FDFBF7", // Beige/Cream
+                        "background-dark": "#1C1917", // Stone 900
+                        "neutral-dark": "#292524", // Stone 800
+                        "neutral-muted": "#78716C", // Stone 500
+                        "surface-light": "#FFFFFF",
+                        "surface-dark": "#292524",
+                    },
+                    fontFamily: {
+                        "display": ["Playfair Display", "serif"],
+                        "body": ["Lato", "sans-serif"],
+                    },
+                    borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "2xl": "1rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<style>
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+        ::selection {
+            background-color: #F472B6;
+            color: white;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark font-body text-neutral-dark dark:text-slate-200 overflow-hidden antialiased">
+<div class="relative flex h-full max-h-screen w-full max-w-md mx-auto flex-col overflow-hidden bg-background-light dark:bg-background-dark shadow-2xl">
+<header class="shrink-0 px-5 pt-8 pb-4 bg-background-light dark:bg-background-dark z-10 transition-colors duration-300">
+<div class="flex w-full flex-row items-center justify-center gap-2 mb-6">
+<div class="h-1.5 w-1.5 rounded-full bg-neutral-muted/30 dark:bg-white/20"></div>
+<div class="h-1.5 w-1.5 rounded-full bg-neutral-muted/30 dark:bg-white/20"></div>
+<div class="h-1.5 w-8 rounded-full bg-primary"></div>
+</div>
+<div class="flex items-center justify-between">
+<div class="w-12">
+<button class="flex items-center justify-center w-10 h-10 rounded-full hover:bg-neutral-dark/5 dark:hover:bg-white/10 transition-colors">
+<span class="material-symbols-outlined text-neutral-dark dark:text-white">arrow_back</span>
+</button>
+</div>
+<h2 class="text-neutral-dark dark:text-white text-xl font-bold leading-tight tracking-tight flex-1 text-center font-display">
+                Tailor Your Vibe
+            </h2>
+<div class="w-12 flex justify-end">
+<button class="text-neutral-muted hover:text-primary transition-colors text-base font-semibold tracking-wide font-body">
+                    Skip
+                </button>
+</div>
+</div>
+</header>
+<main class="flex-1 overflow-y-auto no-scrollbar pb-40 px-5">
+<div class="py-4 text-center">
+<h1 class="text-neutral-dark dark:text-white text-[32px] font-black leading-[1.1] mb-3 tracking-tight font-display">
+                What moves you?
+            </h1>
+<p class="text-neutral-muted dark:text-slate-400 text-lg font-medium leading-relaxed max-w-[90%] mx-auto font-body">
+                Select at least 3 topics to help us find the perfect quotes for you.
+            </p>
+</div>
+<div class="pt-4 pb-8">
+<h3 class="text-neutral-dark dark:text-white text-lg font-bold leading-tight mb-4 opacity-90 px-1 font-display">Themes</h3>
+<div class="grid grid-cols-2 gap-3">
+<button class="group relative flex items-center justify-between p-4 pl-5 rounded-2xl bg-primary/10 border-2 border-primary transition-all duration-200">
+<span class="text-primary font-bold text-[17px]">Motivation</span>
+<span class="material-symbols-outlined text-primary text-xl font-bold">check</span>
+</button>
+<button class="group relative flex items-center justify-between p-4 pl-5 rounded-2xl bg-surface-light dark:bg-surface-dark border border-transparent shadow-[0_2px_8px_-2px_rgba(0,0,0,0.05)] hover:shadow-md hover:scale-[1.02] transition-all duration-200">
+<span class="text-neutral-dark dark:text-white font-semibold text-[17px]">Discipline</span>
+<span class="material-symbols-outlined text-neutral-muted/40 dark:text-white/20 text-xl group-hover:text-primary transition-colors">add</span>
+</button>
+<button class="group relative flex items-center justify-between p-4 pl-5 rounded-2xl bg-primary/10 border-2 border-primary transition-all duration-200">
+<span class="text-primary font-bold text-[17px]">Gratitude</span>
+<span class="material-symbols-outlined text-primary text-xl font-bold">check</span>
+</button>
+<button class="group relative flex items-center justify-between p-4 pl-5 rounded-2xl bg-surface-light dark:bg-surface-dark border border-transparent shadow-[0_2px_8px_-2px_rgba(0,0,0,0.05)] hover:shadow-md hover:scale-[1.02] transition-all duration-200">
+<span class="text-neutral-dark dark:text-white font-semibold text-[17px]">Mental Health</span>
+<span class="material-symbols-outlined text-neutral-muted/40 dark:text-white/20 text-xl group-hover:text-primary transition-colors">add</span>
+</button>
+<button class="group relative flex items-center justify-between p-4 pl-5 rounded-2xl bg-surface-light dark:bg-surface-dark border border-transparent shadow-[0_2px_8px_-2px_rgba(0,0,0,0.05)] hover:shadow-md hover:scale-[1.02] transition-all duration-200">
+<span class="text-neutral-dark dark:text-white font-semibold text-[17px]">Business</span>
+<span class="material-symbols-outlined text-neutral-muted/40 dark:text-white/20 text-xl group-hover:text-primary transition-colors">add</span>
+</button>
+<button class="group relative flex items-center justify-between p-4 pl-5 rounded-2xl bg-primary/10 border-2 border-primary transition-all duration-200">
+<span class="text-primary font-bold text-[17px]">Philosophy</span>
+<span class="material-symbols-outlined text-primary text-xl font-bold">check</span>
+</button>
+<button class="group relative flex items-center justify-between p-4 pl-5 rounded-2xl bg-surface-light dark:bg-surface-dark border border-transparent shadow-[0_2px_8px_-2px_rgba(0,0,0,0.05)] hover:shadow-md hover:scale-[1.02] transition-all duration-200">
+<span class="text-neutral-dark dark:text-white font-semibold text-[17px]">Love</span>
+<span class="material-symbols-outlined text-neutral-muted/40 dark:text-white/20 text-xl group-hover:text-primary transition-colors">add</span>
+</button>
+<button class="group relative flex items-center justify-between p-4 pl-5 rounded-2xl bg-surface-light dark:bg-surface-dark border border-transparent shadow-[0_2px_8px_-2px_rgba(0,0,0,0.05)] hover:shadow-md hover:scale-[1.02] transition-all duration-200">
+<span class="text-neutral-dark dark:text-white font-semibold text-[17px]">Fitness</span>
+<span class="material-symbols-outlined text-neutral-muted/40 dark:text-white/20 text-xl group-hover:text-primary transition-colors">add</span>
+</button>
+</div>
+</div>
+<div class="pb-6">
+<div class="flex items-center justify-between mb-4 px-1">
+<h3 class="text-neutral-dark dark:text-white text-lg font-bold leading-tight opacity-90 font-display">Authors</h3>
+<button class="text-primary text-sm font-bold tracking-wide hover:underline decoration-2 underline-offset-4">View all</button>
+</div>
+<div class="flex overflow-x-auto gap-6 pb-4 -mx-5 px-6 no-scrollbar">
+<div class="flex flex-col items-center gap-2 shrink-0 group cursor-pointer">
+<div class="relative">
+<div class="w-[72px] h-[72px] rounded-full overflow-hidden ring-2 ring-primary ring-offset-2 ring-offset-background-light dark:ring-offset-background-dark p-0.5 transition-all">
+<img alt="Portrait of a woman looking sideways with soft lighting" class="w-full h-full rounded-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDA_5pHHCETkKkycFwpBKfwuxMsj3iLVe37yJ8TQnx8lOMY4QFzG52GqGxJt45EJu5dfaFHAap7CNrFwNQZCHtxJs8VU5cOqiu0zLnd6DHbIQpkgKCsWlwCt8A9JsHPaeX-Xc_I3Ni5waCkjM2sxPH3M3wF6uKGeRGUrLBT6VxSnqidQc0Kb4CqgwmKicx2llcnpClRKdGUUQiU1ggAPlN4iX97dUjzxf437HN1KFGYNARJTz-yffmJupAiexs9CmrF6g44uUmVEb4"/>
+</div>
+<div class="absolute bottom-0 right-0 bg-primary text-white rounded-full p-1 border-2 border-background-light dark:border-background-dark shadow-sm">
+<span class="material-symbols-outlined text-[14px] font-bold block">check</span>
+</div>
+</div>
+<span class="text-sm font-bold text-neutral-dark dark:text-white">Maya Angelou</span>
+</div>
+<div class="flex flex-col items-center gap-2 shrink-0 group cursor-pointer">
+<div class="relative">
+<div class="w-[72px] h-[72px] rounded-full overflow-hidden ring-2 ring-transparent hover:ring-primary/40 ring-offset-2 ring-offset-background-light dark:ring-offset-background-dark transition-all">
+<img alt="Portrait of a smiling man with a beard" class="w-full h-full rounded-full object-cover grayscale group-hover:grayscale-0 transition-all duration-300" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBgD3O43NWNhN9RBTPP9uinfIN7Nkg5jAyog3DF9Ldpx7p1YS2i_jO5SAZFzsxmnrvWlFnrI8oHm0DTiAEI-_EQEtOk63oHGPA-_mbznQIJVGuG6H02hbVhp5CO65HQvT8nZarvV5Rb__GZhDWlnMLOF0yvgVuV880zOuydXkl7zq5XdKIsTX7dqsTUjWTxNIZtjrESZuWyzammlIMHJ-Gp0doyDt3kjnQwvDmHUwG8W1Lag2ush0Ulkugb1qzSi_8oBy2Xj_w8d9Y"/>
+</div>
+<div class="absolute bottom-0 right-0 bg-surface-light dark:bg-surface-dark text-neutral-muted rounded-full p-1 border-2 border-background-light dark:border-background-dark shadow-sm">
+<span class="material-symbols-outlined text-[14px] block font-bold">add</span>
+</div>
+</div>
+<span class="text-sm font-medium text-neutral-muted dark:text-white/60 group-hover:text-neutral-dark dark:group-hover:text-white transition-colors">James Clear</span>
+</div>
+<div class="flex flex-col items-center gap-2 shrink-0 group cursor-pointer">
+<div class="relative">
+<div class="w-[72px] h-[72px] rounded-full overflow-hidden ring-2 ring-primary ring-offset-2 ring-offset-background-light dark:ring-offset-background-dark p-0.5 transition-all">
+<img alt="Portrait of a man looking serious against a plain background" class="w-full h-full rounded-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAQcyvxsOWaJtXl-zGGV6UGzst2jywtZlmSDqIem0P3I2BaFKbilX-MDIwPZku3uk65R1WVQR3M6vlMc3LuS1Oz0nKX3dqiHCk1wFemDuKwjv_eXa4wIkbPJDVpYMSgsy7BsJ86GjuLgX8NT9SQifWSY73HeyGP9RYfOft9emNp3WOy2kol8-D9yd5pPFKxaTtIBUs04QJaVkKVL0Aao-3tf15ZkocR1j-LubWwS3P12IGeEFLwJ2cYQZ5X6942QvvH0-VffAO0OKg"/>
+</div>
+<div class="absolute bottom-0 right-0 bg-primary text-white rounded-full p-1 border-2 border-background-light dark:border-background-dark shadow-sm">
+<span class="material-symbols-outlined text-[14px] font-bold block">check</span>
+</div>
+</div>
+<span class="text-sm font-bold text-neutral-dark dark:text-white">Marcus A.</span>
+</div>
+<div class="flex flex-col items-center gap-2 shrink-0 group cursor-pointer">
+<div class="relative">
+<div class="w-[72px] h-[72px] rounded-full overflow-hidden ring-2 ring-transparent hover:ring-primary/40 ring-offset-2 ring-offset-background-light dark:ring-offset-background-dark transition-all">
+<img alt="Portrait of a smiling woman with curly hair" class="w-full h-full rounded-full object-cover grayscale group-hover:grayscale-0 transition-all duration-300" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDGqTdGr9JLAU3rL7r9-14kADt931jjOtGF7huiPNNS7Ybb6gVlClQV7An-2MaV6MJWAbExwDqHYwxVv481MdcpONHviILvP8JxlRJlQSbVicIKx2yZqnS1YahN7qv0N7ea2DksDpvHwedhuB0i5PQzJceDRinXvcMRTxMmw9PJhCphTib4Hv4TyBKo4qf1JCVUBrcYSQ10IWizLgM3bems_F_pfre9uc9hf7XuZYNxYWneSQzb9pxcSJkwbmlzQDns7WHryRUj55E"/>
+</div>
+<div class="absolute bottom-0 right-0 bg-surface-light dark:bg-surface-dark text-neutral-muted rounded-full p-1 border-2 border-background-light dark:border-background-dark shadow-sm">
+<span class="material-symbols-outlined text-[14px] block font-bold">add</span>
+</div>
+</div>
+<span class="text-sm font-medium text-neutral-muted dark:text-white/60 group-hover:text-neutral-dark dark:group-hover:text-white transition-colors">Brene Brown</span>
+</div>
+<div class="flex flex-col items-center gap-2 shrink-0 group cursor-pointer">
+<div class="relative">
+<div class="w-[72px] h-[72px] rounded-full overflow-hidden ring-2 ring-transparent hover:ring-primary/40 ring-offset-2 ring-offset-background-light dark:ring-offset-background-dark transition-all">
+<img alt="Portrait of a woman with intense gaze" class="w-full h-full rounded-full object-cover grayscale group-hover:grayscale-0 transition-all duration-300" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCgFgdSLBS7GLhhUnq58D7M7blBf7cCcnmmkU8BsGWgJR98q67w7DlDK8akj881aPEeQWRrQnkcngW856XHBGYKfOmcNxoPty2yLOrdv5XRm6KEkLQLySt5-MAtJtVvxlgUWdYg_ruyphQACLB5lzEgW5YUSp1GgQE2a-xeEzqBhUC5VxHsefALFysY56_FfeL4Hv1AyrKPVqQ-ySeIROSZqi0BgG4tc2Yykh74Oj4gLzCY9B1sPZgehuh0b4QOvf42WnjHMrpnkpQ"/>
+</div>
+<div class="absolute bottom-0 right-0 bg-surface-light dark:bg-surface-dark text-neutral-muted rounded-full p-1 border-2 border-background-light dark:border-background-dark shadow-sm">
+<span class="material-symbols-outlined text-[14px] block font-bold">add</span>
+</div>
+</div>
+<span class="text-sm font-medium text-neutral-muted dark:text-white/60 group-hover:text-neutral-dark dark:group-hover:text-white transition-colors">Mel Robbins</span>
+</div>
+</div>
+</div>
+</main>
+<footer class="absolute bottom-0 left-0 w-full px-6 pb-8 pt-12 bg-gradient-to-t from-background-light via-background-light/95 to-transparent dark:from-background-dark dark:via-background-dark/95 pointer-events-none flex justify-center z-20">
+<button id="startReadingBtn" class="pointer-events-auto w-full bg-primary hover:bg-[#C2410C] text-white font-bold text-lg py-4 rounded-full shadow-xl shadow-primary/25 active:scale-[0.98] transition-all duration-200 flex items-center justify-center gap-3">
+<span class="tracking-wide">Start Reading</span>
+<span class="material-symbols-outlined text-[22px]">arrow_forward</span>
+</button>
+</footer>
+</div>
+
+
+<script>
+(function(){
+  const MIN_TOPICS = 3;
+  const STORAGE_KEY = "day_preferences_v1";
+  const ONBOARDED_KEY = "day_onboarded_v1";
+
+  function getSelectedTopics(){
+    return Array.from(document.querySelectorAll('button.border-2.border-primary span:first-child'))
+      .map(el => el.textContent.trim())
+      .filter(Boolean);
+  }
+
+  function flash(msg){
+    let el = document.getElementById("minSelectHint");
+    if(!el){
+      el = document.createElement("div");
+      el.id = "minSelectHint";
+      el.className = "mx-5 mt-2 text-sm font-semibold text-primary";
+      const p = document.querySelector("main .py-4");
+      if(p) p.appendChild(el);
+    }
+    el.textContent = msg;
+    el.animate([{opacity:0},{opacity:1}], {duration:180, fill:"forwards"});
+    setTimeout(()=>{ try{ el.animate([{opacity:1},{opacity:0}], {duration:220, fill:"forwards"}); }catch(e){} }, 1600);
+  }
+
+  // Toggle topic buttons
+  document.querySelectorAll('main button').forEach(btn=>{
+    const label = btn.querySelector("span");
+    const icon = btn.querySelector(".material-symbols-outlined");
+    if(!label || !icon) return;
+
+    const isTheme = btn.closest(".grid");
+    if(!isTheme) return;
+
+    btn.addEventListener("click", (e)=>{
+      e.preventDefault();
+      const selected = btn.classList.contains("bg-primary/10");
+      if(selected){
+        btn.classList.remove("bg-primary/10","border-2","border-primary");
+        btn.classList.add("bg-surface-light","dark:bg-surface-dark","border","border-transparent");
+        label.classList.remove("text-primary","font-bold");
+        label.classList.add("text-neutral-dark","dark:text-white","font-semibold");
+        icon.textContent = "add";
+        icon.classList.remove("text-primary","font-bold");
+        icon.classList.add("text-neutral-muted/40","dark:text-white/20");
+      }else{
+        btn.classList.add("bg-primary/10","border-2","border-primary");
+        btn.classList.remove("bg-surface-light","dark:bg-surface-dark","border","border-transparent");
+        label.classList.add("text-primary","font-bold");
+        label.classList.remove("text-neutral-dark","dark:text-white","font-semibold");
+        icon.textContent = "check";
+        icon.classList.add("text-primary","font-bold");
+        icon.classList.remove("text-neutral-muted/40","dark:text-white/20");
+      }
+    });
+  });
+
+  function goToApp(){
+    // IMPORTANT: change this path to your real main page if needed
+    window.location.href = "../index.html";
+  }
+
+  document.getElementById("skipBtn")?.addEventListener("click", ()=>{
+    localStorage.setItem(ONBOARDED_KEY, "1");
+    goToApp();
+  });
+
+  document.getElementById("startReadingBtn")?.addEventListener("click", ()=>{
+    const topics = getSelectedTopics();
+    if(topics.length < MIN_TOPICS){
+      flash("Pick at least 3 topics ✨");
+      return;
+    }
+    const payload = { topics, savedAt: new Date().toISOString() };
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(payload));
+    localStorage.setItem(ONBOARDED_KEY, "1");
+    goToApp();
+  });
+})();
+</script>
+
+<script>
+  const DAY_ONBOARDING_FLAG = "day_onboarding_done_v1";
+  function markOnboardingDone() {
+    try { localStorage.setItem(DAY_ONBOARDING_FLAG, "1"); } catch(e) {}
+  }
+
+  // If a Continue button exists, hook it
+  const continueBtn =
+    document.getElementById("continueBtn") ||
+    document.querySelector('[data-action="continue"]') ||
+    document.querySelector('button[type="submit"]') ||
+    Array.from(document.querySelectorAll("button")).find(b => /continue/i.test(b.textContent));
+
+  if (continueBtn) {
+    continueBtn.addEventListener("click", () => {
+      markOnboardingDone();
+      // go to main app
+      window.location.href = "../index.html";
+    });
+  }
+
+  // Fallback: mark done when leaving this page via any link to ../index.html
+  document.addEventListener("click", (e) => {
+    const a = e.target.closest("a");
+    if (!a) return;
+    if (a.getAttribute("href") && a.getAttribute("href").includes("../index.html")) {
+      markOnboardingDone();
+    }
+  });
+</script>
+
+</body></html>

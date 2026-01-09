@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>DAY</title>
+</head>
+<body>
+<script>
+  (function(){
+    const ONBOARDED_KEY = "day_onboarded_v1";
+    const onboarded = localStorage.getItem(ONBOARDED_KEY) === "1";
+    if(onboarded){
+      window.location.replace("../index.html");
+    }else{
+      window.location.replace("./welcome.html");
+    }
+  })();
+</script>
+
+<script>
+  const DAY_ONBOARDING_FLAG = "day_onboarding_done_v1";
+  // If user already completed onboarding once, send them to the main app
+  if (localStorage.getItem(DAY_ONBOARDING_FLAG) === "1") {
+    window.location.replace("../index.html");
+  } else {
+    window.location.replace("./welcome.html");
+  }
+</script>
+
+</body>
+</html>
