@@ -1,16 +1,15 @@
 <script>
 (function(){
-  // ========= CONFIG =========
   const MIN_TOPICS = 3;
+  const PREFS_KEY = "day_preferences_v1";
+  const FLAG_KEY  = "day_onboarding_done_v1";
 
-  // Unificamos TODO en un solo flag (NO más flags diferentes)
-  const DAY_ONBOARDING_FLAG = "day_onboarding_done_v1";
+  function getSelectedTopics(){
+    return Array.from(document.querySelectorAll('button.border-2.border-primary span:first-child'))
+      .map(el => el.textContent.trim())
+      .filter(Boolean);
+  }
 
-  // Keys para guardar preferencias
-  const TOPICS_KEY  = "day_selected_topics_v1";
-  const AUTHORS_KEY = "day_selected_authors_v1";
-
-  // ========= HELPERS =========
   function flash(msg){
     let el = document.getElementById("minSelectHint");
     if(!el){
@@ -21,42 +20,19 @@
       if(p) p.appendChild(el);
     }
     el.textContent = msg;
-    el.animate([{opacity:0},{opacity:1}], {duration:180, fill:"forwards"});
-    setTimeout(()=>{ try{ el.animate([{opacity:1},{opacity:0}], {duration:220, fill:"forwards"}); }catch(e){} }, 1600);
+    setTimeout(()=>{ el.textContent = ""; }, 1600);
   }
 
-  function goToApp(){
-    window.location.href = "../index.html";
-  }
-
-  function markDone(){
-    try { localStorage.setItem(DAY_ONBOARDING_FLAG, "1"); } catch(e) {}
-  }
-
-  // ========= TOPICS (Themes grid) =========
-  function isThemeButton(btn){
-    return btn.closest(".grid") && btn.querySelector("span") && btn.querySelector(".material-symbols-outlined");
-  }
-
-  function getSelectedTopics(){
-    // “seleccionado” = tiene bg-primary/10 y border-primary
-    return Array.from(document.querySelectorAll(".grid button"))
-      .filter(btn => btn.classList.contains("bg-primary/10") && btn.classList.contains("border-primary"))
-      .map(btn => (btn.querySelector("span")?.textContent || "").trim())
-      .filter(Boolean);
-  }
-
-  // Toggle theme buttons
-  document.querySelectorAll(".grid button").forEach(btn=>{
-    if(!isThemeButton(btn)) return;
-
+  // Toggle SOLO Themes (los botones del grid)
+  document.querySelectorAll('.grid button').forEach(btn=>{
     const label = btn.querySelector("span");
     const icon = btn.querySelector(".material-symbols-outlined");
+    if(!label || !icon) return;
 
     btn.addEventListener("click", (e)=>{
       e.preventDefault();
-
       const selected = btn.classList.contains("bg-primary/10");
+
       if(selected){
         btn.classList.remove("bg-primary/10","border-2","border-primary");
         btn.classList.add("bg-surface-light","dark:bg-surface-dark","border","border-transparent");
@@ -65,7 +41,7 @@
         icon.textContent = "add";
         icon.classList.remove("text-primary","font-bold");
         icon.classList.add("text-neutral-muted/40","dark:text-white/20");
-      }else{
+      } else {
         btn.classList.add("bg-primary/10","border-2","border-primary");
         btn.classList.remove("bg-surface-light","dark:bg-surface-dark","border","border-transparent");
         label.classList.add("text-primary","font-bold");
@@ -77,116 +53,38 @@
     });
   });
 
-  // ========= AUTHORS (horizontal avatars) =========
-  // Cada autor es un div con "cursor-pointer" dentro del carrusel.
-  // Vamos a guardar seleccionados y cambiar el estilo como los que ya vienen "check".
-  const authorCards = Array.from(document.querySelectorAll(".flex.overflow-x-auto .cursor-pointer"));
+  function finishOnboarding(){
+    const topics = getSelectedTopics();
 
-  function authorName(card){
-    // El nombre está en el <span> de abajo
-    const spans = card.querySelectorAll("span");
-    return (spans[spans.length - 1]?.textContent || "").trim();
-  }
-
-  function isAuthorSelected(card){
-    // seleccionado = tiene ring-primary y un check con bg-primary
-    return !!card.querySelector(".ring-primary") && !!card.querySelector(".bg-primary");
-  }
-
-  function setAuthorSelected(card, selected){
-    const ringWrap = card.querySelector(".w-\\[72px\\].h-\\[72px\\]"); // div del círculo
-    const badge = card.querySelector(".absolute.bottom-0.right-0");    // badge add/check
-
-    if(!ringWrap || !badge) return;
-
-    if(selected){
-      ringWrap.classList.add("ring-primary","p-0.5");
-      ringWrap.classList.remove("ring-transparent");
-      badge.classList.add("bg-primary","text-white");
-      badge.classList.remove("bg-surface-light","dark:bg-surface-dark","text-neutral-muted");
-      const icon = badge.querySelector(".material-symbols-outlined");
-      if(icon) icon.textContent = "check";
-
-      // nombre más fuerte
-      const nameSpan = card.querySelector("span:last-child");
-      if(nameSpan){
-        nameSpan.classList.add("font-bold","text-neutral-dark","dark:text-white");
-        nameSpan.classList.remove("font-medium","text-neutral-muted","dark:text-white/60");
-      }
-    }else{
-      ringWrap.classList.remove("ring-primary","p-0.5");
-      ringWrap.classList.add("ring-transparent");
-      badge.classList.remove("bg-primary","text-white");
-      badge.classList.add("bg-surface-light","dark:bg-surface-dark","text-neutral-muted");
-      const icon = badge.querySelector(".material-symbols-outlined");
-      if(icon) icon.textContent = "add";
-
-      const nameSpan = card.querySelector("span:last-child");
-      if(nameSpan){
-        nameSpan.classList.remove("font-bold","text-neutral-dark","dark:text-white");
-        nameSpan.classList.add("font-medium","text-neutral-muted","dark:text-white/60");
-      }
+    if(topics.length < MIN_TOPICS){
+      flash("Pick at least 3 topics ✨");
+      return;
     }
+
+    localStorage.setItem(PREFS_KEY, JSON.stringify({
+      topics,
+      savedAt: new Date().toISOString()
+    }));
+
+    // ✅ EL ÚNICO FLAG que importa
+    localStorage.setItem(FLAG_KEY, "1");
+
+    // ir a la app principal
+    window.location.replace("../index.html");
   }
 
-  authorCards.forEach(card=>{
-    card.addEventListener("click", (e)=>{
-      e.preventDefault();
-      const selected = isAuthorSelected(card);
-      setAuthorSelected(card, !selected);
-    });
-  });
-
-  function getSelectedAuthors(){
-    return authorCards
-      .filter(card => isAuthorSelected(card))
-      .map(card => authorName(card))
-      .filter(Boolean);
-  }
-
-  // ========= SKIP button =========
-  // Tu botón "Skip" no tiene id, entonces lo buscamos por texto.
-  const skipBtn = Array.from(document.querySelectorAll("header button"))
-    .find(b => /skip/i.test(b.textContent.trim()));
-
+  // ✅ IMPORTANTÍSIMO: tu botón Skip debe tener id="skipBtn"
+  const skipBtn = document.getElementById("skipBtn");
   if(skipBtn){
-    skipBtn.addEventListener("click", (e)=>{
-      e.preventDefault();
-      // si skipea, igual marcamos onboarding done
-      markDone();
-      goToApp();
+    skipBtn.addEventListener("click", ()=>{
+      localStorage.setItem(FLAG_KEY, "1");
+      window.location.replace("../index.html");
     });
   }
 
-  // ========= START READING =========
   const startBtn = document.getElementById("startReadingBtn");
-
   if(startBtn){
-    startBtn.addEventListener("click", (e)=>{
-      e.preventDefault();
-
-      const topics = getSelectedTopics();
-      if(topics.length < MIN_TOPICS){
-        flash("Pick at least 3 topics ✨");
-        return;
-      }
-
-      const authors = getSelectedAuthors();
-      // No obligo autores, pero si quieres que sea mínimo 1 dime y lo hago.
-
-      // Guardar
-      localStorage.setItem(TOPICS_KEY, JSON.stringify(topics));
-      localStorage.setItem(AUTHORS_KEY, JSON.stringify(authors));
-
-      // Marcar onboarding terminado (ESTA ES LA CLAVE)
-      markDone();
-alert("Saved flag = " + localStorage.getItem("day_onboarding_done_v1"));
-
-      // Ir a la app
-      goToApp();
-    });
+    startBtn.addEventListener("click", finishOnboarding);
   }
-
 })();
 </script>
-
