@@ -30,6 +30,15 @@
   </style>
 </head>
 <body>
+  <script>
+  const DAY_ONBOARDING_FLAG = "day_onboarding_done_v1";
+
+  // Si NO terminó onboarding, mándalo al onboarding
+  if (localStorage.getItem(DAY_ONBOARDING_FLAG) !== "1") {
+    window.location.replace("./onboarding/");
+  }
+</script>
+
   <div class="wrap">
     <div class="top">TODAY'S QUOTE</div>
 
