@@ -2,22 +2,21 @@
 <html>
 <head>
   <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>DAY Onboarding</title>
 </head>
 <body>
+  <script>
+    // Un solo flag, una sola lógica
+    const DAY_ONBOARDING_FLAG = "day_onboarding_done_v1";
 
-<script>
-  // Clave que guarda si ya terminó onboarding
-  const DAY_ONBOARDING_FLAG = "day_onboarding_done_v1";
-
-  // Si ya lo completó → ir a la app principal
-  if (localStorage.getItem(DAY_ONBOARDING_FLAG) === "1") {
-    window.location.replace("../index.html");
-  } else {
-    // Si no → mostrar onboarding
-    window.location.replace("./welcome.html");
-  }
-</script>
-
+    // Si ya lo hizo una vez -> ir a la app principal
+    if (localStorage.getItem(DAY_ONBOARDING_FLAG) === "1") {
+      window.location.replace("../index.html");
+    } else {
+      // Si no -> ir a welcome
+      window.location.replace("./welcome.html");
+    }
+  </script>
 </body>
 </html>
