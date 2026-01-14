@@ -1,4 +1,3 @@
-
 <!doctype html>
 <html lang="en">
 <head>
@@ -22,15 +21,15 @@
     a{color:inherit;text-decoration:none}
   </style>
 </head>
-<body>
-  <script>
-  const DAY_ONBOARDING_FLAG = "day_onboarding_done_v1";
 
-  // Si NO terminó onboarding, mándalo al onboarding
-  if (localStorage.getItem(DAY_ONBOARDING_FLAG) !== "1") {
-    window.location.replace("./onboarding/");
-  }
-</script>
+<body>
+  <!-- Onboarding gate (solo si NO terminó onboarding) -->
+  <script>
+    const DAY_ONBOARDING_FLAG = "day_onboarding_done_v1";
+    if (localStorage.getItem(DAY_ONBOARDING_FLAG) !== "1") {
+      window.location.replace("./onboarding/");
+    }
+  </script>
 
   <div class="wrap">
     <div class="top">TODAY'S QUOTE</div>
@@ -57,39 +56,82 @@
     <div id="favList" style="display:none;margin-top:14px;"></div>
   </div>
 
+  <!-- Quotes data -->
   <script src="quotes.js"></script>
+
   <script>
-    // Quote-of-the-day (stable within the same calendar day, UTC)
+    // ======= PERSONALIZATION: topics filter =======
+    const PREFS_KEY = "day_preferences_v1";
+
+    function getChosenTopics() {
+      try {
+        const raw = localStorage.getItem(PREFS_KEY);
+        if (!raw) return [];
+        const data = JSON.parse(raw);
+        return Array.isArray(data.topics) ? data.topics : [];
+      } catch (e) {
+        return [];
+      }
+    }
+
+    // ======= Quote-of-the-day (stable within the same calendar day, UTC) =======
     function dayNumberUTC() {
       const now = new Date();
       const utc = Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate());
       return Math.floor(utc / 86400000);
     }
-    function getQuoteOfDay() {
-      const n = dayNumberUTC();
-      const idx = n % window.QUOTES.length;
-      return window.QUOTES[idx];
+
+    function filterQuotesByTopics(quotes, chosenTopics) {
+      if (!chosenTopics.length) return quotes;
+
+      const chosen = new Set(chosenTopics.map(t => String(t).toLowerCase().trim()));
+      return quotes.filter(q => {
+        const topics = Array.isArray(q.topics) ? q.topics : [];
+        return topics.some(t => chosen.has(String(t).toLowerCase().trim()));
+      });
     }
 
-    // Favorites (stored locally on the device)
+    function getQuoteOfDay() {
+      const quotes = window.QUOTES || [];
+      if (!quotes.length) return null;
+
+      const chosenTopics = getChosenTopics();
+      const filtered = filterQuotesByTopics(quotes, chosenTopics);
+
+      const pool = filtered.length ? filtered : quotes; // fallback si no hay matches
+      const idx = dayNumberUTC() % pool.length;
+      return pool[idx];
+    }
+
+    // ======= Favorites (stored locally on the device) =======
     const LS_KEY = "DAY_FAVORITES";
     function loadFavs(){ try{return JSON.parse(localStorage.getItem(LS_KEY)||"[]");}catch(e){return []} }
     function saveFavs(arr){ localStorage.setItem(LS_KEY, JSON.stringify(arr)); }
 
+    // ======= Render today's quote =======
     const q = getQuoteOfDay();
-    document.getElementById("qText").textContent = q.text;
-    document.getElementById("qAuthor").textContent = q.author;
 
-    // Pass quote id to detail.html
-    document.getElementById("storyBtn").href = `detail.html?id=${encodeURIComponent(q.id)}`;
+    if (!q) {
+      document.getElementById("qText").textContent = "No quotes found. Add quotes to quotes.js";
+      document.getElementById("qAuthor").textContent = "";
+      document.getElementById("storyBtn").style.display = "none";
+    } else {
+      document.getElementById("qText").textContent = q.text;
+      document.getElementById("qAuthor").textContent = q.author;
+
+      // Pass quote id to detail.html
+      document.getElementById("storyBtn").href = `detail.html?id=${encodeURIComponent(q.id)}`;
+    }
 
     // Favorite star
     const favBtn = document.getElementById("favBtn");
     function syncFavStar(){
+      if (!q) return;
       const favs = loadFavs();
       favBtn.style.opacity = favs.includes(q.id) ? "1" : ".45";
     }
     favBtn.addEventListener("click", () => {
+      if (!q) return;
       const favs = loadFavs();
       const i = favs.indexOf(q.id);
       if(i >= 0) favs.splice(i,1); else favs.push(q.id);
@@ -101,6 +143,7 @@
 
     // Share
     document.getElementById("shareBtn").addEventListener("click", async () => {
+      if (!q) return;
       const text = `${q.text} — ${q.author}`;
       try{
         if(navigator.share){ await navigator.share({ text }); }
@@ -121,7 +164,7 @@
         favList.innerHTML = `<div style="opacity:.7;font-weight:700;padding:10px 6px;">No favorites yet.</div>`;
         return;
       }
-      const items = favs.map(id => window.QUOTES.find(x=>x.id===id)).filter(Boolean);
+      const items = favs.map(id => (window.QUOTES||[]).find(x=>x.id===id)).filter(Boolean);
       favList.innerHTML = items.map(item => `
         <div style="background:#fff;border-radius:16px;padding:14px 14px;margin:10px 0;box-shadow:0 6px 16px rgba(0,0,0,.06)">
           <div style="font-weight:800">${item.text}</div>
