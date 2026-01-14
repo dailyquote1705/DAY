@@ -32,3 +32,36 @@ window.QUOTES = [
     story: "A push to start: momentum often appears after action, not before."
   }
 ];
+// quotes.js
+window.DAY_QUOTES = [
+  {
+    text: "Discipline is choosing between what you want now and what you want most.",
+    author: "Abraham Lincoln",
+    story: "This quote is often attributed as a reminder that long-term goals beat short-term cravings.",
+    topics: ["Discipline", "Motivation"]
+  },
+  {
+    text: "Gratitude turns what we have into enough.",
+    author: "Aesop",
+    story: "A reminder that appreciation changes how you experience life.",
+    topics: ["Gratitude", "Mental Health"]
+  },
+  {
+    text: "You do not rise to the level of your goals. You fall to the level of your systems.",
+    author: "James Clear",
+    story: "From Atomic Habits — focus on systems over goals.",
+    topics: ["Discipline", "Business", "Motivation"]
+  },
+  {
+    text: "We suffer more often in imagination than in reality.",
+    author: "Seneca",
+    story: "Stoic idea: worry is usually worse than what actually happens.",
+    topics: ["Philosophy", "Mental Health"]
+  },
+  {
+    text: "The secret of getting ahead is getting started.",
+    author: "Mark Twain",
+    story: "Momentum comes after you begin.",
+    topics: ["Motivation"]
+  }
+];
