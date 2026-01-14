@@ -1,104 +1,306 @@
-<script>
-(function(){
-  const MIN_TOPICS = 3;
-  const PREFS_KEY = "day_preferences_v1";
-  const FLAG_KEY  = "day_onboarding_done_v1";
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>DAY – Personalization</title>
 
-  function getSelectedTopics(){
-    return Array.from(document.querySelectorAll('button.border-2.border-primary span:first-child'))
-      .map(el => el.textContent.trim())
-      .filter(Boolean);
-  }
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700&family=Playfair+Display:wght@600;700;800&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@300;500;700&display=swap" rel="stylesheet" />
 
-  function flash(msg){
-    let el = document.getElementById("minSelectHint");
-    if(!el){
-      el = document.createElement("div");
-      el.id = "minSelectHint";
-      el.className = "mx-5 mt-2 text-sm font-semibold text-primary";
-      const p = document.querySelector("main .py-4");
-      if(p) p.appendChild(el);
-    }
-    el.textContent = msg;
-    setTimeout(()=>{ el.textContent = ""; }, 1600);
-  }
-
-  // Toggle SOLO Themes (los botones del grid)
-  document.querySelectorAll('button.rounded-2xl').forEach(btn=>{
-    const label = btn.querySelector("span");
-    const icon = btn.querySelector(".material-symbols-outlined");
-    if(!label || !icon) return;
-
-    btn.addEventListener("click", (e)=>{
-      e.preventDefault();
-      const selected = btn.classList.contains("bg-primary/10");
-
-      if(selected){
-        btn.classList.remove("bg-primary/10","border-2","border-primary");
-        btn.classList.add("bg-surface-light","dark:bg-surface-dark","border","border-transparent");
-        label.classList.remove("text-primary","font-bold");
-        label.classList.add("text-neutral-dark","dark:text-white","font-semibold");
-        icon.textContent = "add";
-        icon.classList.remove("text-primary","font-bold");
-        icon.classList.add("text-neutral-muted/40","dark:text-white/20");
-      } else {
-        btn.classList.add("bg-primary/10","border-2","border-primary");
-        btn.classList.remove("bg-surface-light","dark:bg-surface-dark","border","border-transparent");
-        label.classList.add("text-primary","font-bold");
-        label.classList.remove("text-neutral-dark","dark:text-white","font-semibold");
-        icon.textContent = "check";
-        icon.classList.add("text-primary","font-bold");
-        icon.classList.remove("text-neutral-muted/40","dark:text-white/20");
+  <script src="https://cdn.tailwindcss.com?plugins=forms"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            primary: "#F9A8D4",     // rosa bajito
+            primaryStrong: "#F472B6",
+            bg: "#FDFBF7",
+            ink: "#1C1C1E",
+            muted: "#78716C",
+            card: "#FFFFFF"
+          },
+          fontFamily: {
+            display: ["Playfair Display", "serif"],
+            body: ["Lato", "sans-serif"]
+          }
+        }
       }
-    });
-  });
-
-  function finishOnboarding(){
-    const topics = getSelectedTopics();
-
-    if(topics.length < MIN_TOPICS){
-      flash("Pick at least 3 topics ✨");
-      return;
     }
+  </script>
 
-    localStorage.setItem(PREFS_KEY, JSON.stringify({
-      topics,
-      savedAt: new Date().toISOString()
-    }));
+  <style>
+    .no-scrollbar::-webkit-scrollbar { display: none; }
+    .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+  </style>
+</head>
 
-    // ✅ EL ÚNICO FLAG que importa
-    localStorage.setItem(FLAG_KEY, "1");
+<body class="bg-bg font-body text-ink">
+  <div class="min-h-[100dvh] max-w-md mx-auto bg-bg relative overflow-hidden">
+    <!-- Top -->
+    <header class="px-5 pt-6 pb-3">
+      <div class="flex items-center justify-between">
+        <a href="./welcome.html" class="w-10 h-10 rounded-full flex items-center justify-center hover:bg-black/5">
+          <span class="material-symbols-outlined">arrow_back</span>
+        </a>
 
-    // ir a la app principal
-    window.location.replace("../index.html");
-  }
+        <h1 class="font-display text-xl font-bold">Tailor Your Vibe</h1>
 
-  // ✅ IMPORTANTÍSIMO: tu botón Skip debe tener id="skipBtn"
-  const skipBtn = document.getElementById("skipBtn");
-  if(skipBtn){
-    skipBtn.addEventListener("click", ()=>{
-      localStorage.setItem(FLAG_KEY, "1");
-      window.location.replace("../index.html");
-    });
-  }
+        <button id="skipBtn" class="text-muted font-bold hover:text-primaryStrong">Skip</button>
+      </div>
 
-  const startBtn = document.getElementById("startReadingBtn");
-  if(startBtn){
-    startBtn.addEventListener("click", finishOnboarding);
-  }
-})();
-</script>
-<script>
-  const AUTHORS_KEY = "day_selected_authors_v1";
+      <div class="mt-4">
+        <h2 class="font-display text-3xl font-extrabold leading-tight">What moves you?</h2>
+        <p class="mt-2 text-muted text-base">
+          Select at least <span class="font-bold">3 topics</span> and (optional) authors.
+        </p>
+        <p id="hint" class="mt-2 text-sm font-bold text-primaryStrong hidden"></p>
+      </div>
+    </header>
 
-  document.querySelectorAll('.cursor-pointer').forEach(card => {
-    card.addEventListener("click", () => {
-      card.classList.toggle("author-selected");
+    <!-- Content -->
+    <main class="px-5 pb-32 overflow-y-auto no-scrollbar" style="max-height: calc(100dvh - 210px);">
+      <!-- Themes -->
+      <section class="mt-4">
+        <h3 class="font-display text-lg font-bold mb-3">Themes</h3>
+        <div id="themesGrid" class="grid grid-cols-2 gap-3">
+          <!-- Button template: data-theme="..." -->
+          <button class="themeBtn flex items-center justify-between p-4 rounded-2xl bg-card shadow-sm border border-transparent"
+                  data-theme="Motivation">
+            <span class="font-bold">Motivation</span>
+            <span class="material-symbols-outlined text-muted/40">add</span>
+          </button>
 
-      const selected = Array.from(document.querySelectorAll(".author-selected span:last-child"))
-        .map(span => span.textContent.trim());
+          <button class="themeBtn flex items-center justify-between p-4 rounded-2xl bg-card shadow-sm border border-transparent"
+                  data-theme="Discipline">
+            <span class="font-bold">Discipline</span>
+            <span class="material-symbols-outlined text-muted/40">add</span>
+          </button>
 
-      localStorage.setItem(AUTHORS_KEY, JSON.stringify(selected));
-    });
-  });
-</script>
+          <button class="themeBtn flex items-center justify-between p-4 rounded-2xl bg-card shadow-sm border border-transparent"
+                  data-theme="Gratitude">
+            <span class="font-bold">Gratitude</span>
+            <span class="material-symbols-outlined text-muted/40">add</span>
+          </button>
+
+          <button class="themeBtn flex items-center justify-between p-4 rounded-2xl bg-card shadow-sm border border-transparent"
+                  data-theme="Mental Health">
+            <span class="font-bold">Mental Health</span>
+            <span class="material-symbols-outlined text-muted/40">add</span>
+          </button>
+
+          <button class="themeBtn flex items-center justify-between p-4 rounded-2xl bg-card shadow-sm border border-transparent"
+                  data-theme="Business">
+            <span class="font-bold">Business</span>
+            <span class="material-symbols-outlined text-muted/40">add</span>
+          </button>
+
+          <button class="themeBtn flex items-center justify-between p-4 rounded-2xl bg-card shadow-sm border border-transparent"
+                  data-theme="Philosophy">
+            <span class="font-bold">Philosophy</span>
+            <span class="material-symbols-outlined text-muted/40">add</span>
+          </button>
+
+          <button class="themeBtn flex items-center justify-between p-4 rounded-2xl bg-card shadow-sm border border-transparent"
+                  data-theme="Love">
+            <span class="font-bold">Love</span>
+            <span class="material-symbols-outlined text-muted/40">add</span>
+          </button>
+
+          <button class="themeBtn flex items-center justify-between p-4 rounded-2xl bg-card shadow-sm border border-transparent"
+                  data-theme="Fitness">
+            <span class="font-bold">Fitness</span>
+            <span class="material-symbols-outlined text-muted/40">add</span>
+          </button>
+        </div>
+      </section>
+
+      <!-- Authors -->
+      <section class="mt-8">
+        <div class="flex items-center justify-between mb-3">
+          <h3 class="font-display text-lg font-bold">Authors</h3>
+          <span class="text-sm text-muted">Optional</span>
+        </div>
+
+        <div id="authorsRow" class="flex gap-4 overflow-x-auto no-scrollbar pb-2 -mx-5 px-5">
+          <!-- Author pill -->
+          <button class="authorBtn shrink-0 flex flex-col items-center gap-2" data-author="Maya Angelou">
+            <div class="w-[72px] h-[72px] rounded-full bg-white shadow-sm border border-black/5 flex items-center justify-center relative">
+              <span class="material-symbols-outlined text-muted">person</span>
+              <span class="badge hidden absolute -bottom-1 -right-1 w-7 h-7 rounded-full bg-primaryStrong text-white flex items-center justify-center border-2 border-bg">
+                <span class="material-symbols-outlined text-[16px]">check</span>
+              </span>
+            </div>
+            <span class="text-sm font-bold text-center">Maya Angelou</span>
+          </button>
+
+          <button class="authorBtn shrink-0 flex flex-col items-center gap-2" data-author="James Clear">
+            <div class="w-[72px] h-[72px] rounded-full bg-white shadow-sm border border-black/5 flex items-center justify-center relative">
+              <span class="material-symbols-outlined text-muted">person</span>
+              <span class="badge hidden absolute -bottom-1 -right-1 w-7 h-7 rounded-full bg-primaryStrong text-white flex items-center justify-center border-2 border-bg">
+                <span class="material-symbols-outlined text-[16px]">check</span>
+              </span>
+            </div>
+            <span class="text-sm font-bold text-center">James Clear</span>
+          </button>
+
+          <button class="authorBtn shrink-0 flex flex-col items-center gap-2" data-author="Marcus Aurelius">
+            <div class="w-[72px] h-[72px] rounded-full bg-white shadow-sm border border-black/5 flex items-center justify-center relative">
+              <span class="material-symbols-outlined text-muted">person</span>
+              <span class="badge hidden absolute -bottom-1 -right-1 w-7 h-7 rounded-full bg-primaryStrong text-white flex items-center justify-center border-2 border-bg">
+                <span class="material-symbols-outlined text-[16px]">check</span>
+              </span>
+            </div>
+            <span class="text-sm font-bold text-center">Marcus A.</span>
+          </button>
+
+          <button class="authorBtn shrink-0 flex flex-col items-center gap-2" data-author="Brené Brown">
+            <div class="w-[72px] h-[72px] rounded-full bg-white shadow-sm border border-black/5 flex items-center justify-center relative">
+              <span class="material-symbols-outlined text-muted">person</span>
+              <span class="badge hidden absolute -bottom-1 -right-1 w-7 h-7 rounded-full bg-primaryStrong text-white flex items-center justify-center border-2 border-bg">
+                <span class="material-symbols-outlined text-[16px]">check</span>
+              </span>
+            </div>
+            <span class="text-sm font-bold text-center">Brené Brown</span>
+          </button>
+
+          <button class="authorBtn shrink-0 flex flex-col items-center gap-2" data-author="Mel Robbins">
+            <div class="w-[72px] h-[72px] rounded-full bg-white shadow-sm border border-black/5 flex items-center justify-center relative">
+              <span class="material-symbols-outlined text-muted">person</span>
+              <span class="badge hidden absolute -bottom-1 -right-1 w-7 h-7 rounded-full bg-primaryStrong text-white flex items-center justify-center border-2 border-bg">
+                <span class="material-symbols-outlined text-[16px]">check</span>
+              </span>
+            </div>
+            <span class="text-sm font-bold text-center">Mel Robbins</span>
+          </button>
+        </div>
+      </section>
+    </main>
+
+    <!-- Bottom CTA -->
+    <footer class="absolute bottom-0 left-0 w-full px-5 pb-6 pt-4 bg-gradient-to-t from-bg via-bg to-transparent">
+      <button id="startReadingBtn"
+              class="w-full rounded-full py-4 font-bold text-lg text-white bg-primaryStrong active:scale-[0.99] transition flex items-center justify-center gap-2 shadow-lg shadow-pink-500/15">
+        <span>Start Reading</span>
+        <span class="material-symbols-outlined">arrow_forward</span>
+      </button>
+    </footer>
+  </div>
+
+  <script>
+    (function () {
+      const MIN_TOPICS = 3;
+
+      // ✅ usa UN SOLO flag (el que ya estás usando en onboarding/index.html)
+      const FLAG_KEY = "day_onboarding_done_v1";
+
+      // guardamos ambos:
+      const PREFS_KEY = "day_preferences_v1";
+      const AUTHORS_KEY = "day_selected_authors_v1";
+
+      // si ya hizo onboarding una vez -> fuera
+      try {
+        if (localStorage.getItem(FLAG_KEY) === "1") {
+          window.location.replace("../index.html");
+          return;
+        }
+      } catch (e) {}
+
+      const hint = document.getElementById("hint");
+
+      const selectedTopics = new Set();
+      const selectedAuthors = new Set();
+
+      // THEMES toggle
+      document.querySelectorAll(".themeBtn").forEach((btn) => {
+        btn.addEventListener("click", (e) => {
+          e.preventDefault();
+          const t = btn.getAttribute("data-theme");
+          const icon = btn.querySelector(".material-symbols-outlined");
+
+          const on = selectedTopics.has(t);
+          if (on) {
+            selectedTopics.delete(t);
+            btn.classList.remove("bg-primary/20", "border", "border-primaryStrong");
+            btn.classList.add("bg-card", "border-transparent");
+            icon.textContent = "add";
+            icon.classList.remove("text-primaryStrong");
+            icon.classList.add("text-muted/40");
+          } else {
+            selectedTopics.add(t);
+            btn.classList.remove("bg-card", "border-transparent");
+            btn.classList.add("bg-primary/20", "border", "border-primaryStrong");
+            icon.textContent = "check";
+            icon.classList.remove("text-muted/40");
+            icon.classList.add("text-primaryStrong");
+          }
+        });
+      });
+
+      // AUTHORS toggle
+      document.querySelectorAll(".authorBtn").forEach((btn) => {
+        btn.addEventListener("click", (e) => {
+          e.preventDefault();
+          const a = btn.getAttribute("data-author");
+          const badge = btn.querySelector(".badge");
+
+          const on = selectedAuthors.has(a);
+          if (on) {
+            selectedAuthors.delete(a);
+            badge.classList.add("hidden");
+          } else {
+            selectedAuthors.add(a);
+            badge.classList.remove("hidden");
+          }
+        });
+      });
+
+      function flash(msg) {
+        hint.textContent = msg;
+        hint.classList.remove("hidden");
+        setTimeout(() => {
+          hint.classList.add("hidden");
+          hint.textContent = "";
+        }, 1400);
+      }
+
+      function goToApp() {
+        window.location.replace("../index.html");
+      }
+
+      document.getElementById("skipBtn").addEventListener("click", () => {
+        try { localStorage.setItem(FLAG_KEY, "1"); } catch(e) {}
+        goToApp();
+      });
+
+      document.getElementById("startReadingBtn").addEventListener("click", () => {
+        if (selectedTopics.size < MIN_TOPICS) {
+          flash("Pick at least 3 topics ✨");
+          return;
+        }
+
+        // guardar topics
+        try {
+          localStorage.setItem(PREFS_KEY, JSON.stringify({
+            topics: Array.from(selectedTopics),
+            savedAt: new Date().toISOString()
+          }));
+        } catch(e) {}
+
+        // guardar authors (puede ser vacío y está bien)
+        try {
+          localStorage.setItem(AUTHORS_KEY, JSON.stringify(Array.from(selectedAuthors)));
+        } catch(e) {}
+
+        // marcar onboarding DONE
+        try { localStorage.setItem(FLAG_KEY, "1"); } catch(e) {}
+
+        goToApp();
+      });
+    })();
+  </script>
+</body>
+</html>
