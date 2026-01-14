@@ -33,9 +33,11 @@
 
   <div class="wrap">
     <div class="top">TODAY'S QUOTE</div>
-<div class="sub" id="streakText" style="text-align:center;margin-top:10px;">
-  ...
-</div>
+
+    <!-- ✅ STREAK UI -->
+    <div class="sub" id="streakText" style="text-align:center;margin-top:10px;">
+      ...
+    </div>
 
     <div class="quoteBox" id="todayView">
       <div class="quote" id="qText">...</div>
@@ -121,8 +123,6 @@
     } else {
       document.getElementById("qText").textContent = q.text;
       document.getElementById("qAuthor").textContent = q.author;
-
-      // Pass quote id to detail.html
       document.getElementById("storyBtn").href = `detail.html?id=${encodeURIComponent(q.id)}`;
     }
 
@@ -193,67 +193,48 @@
       todayActions.style.display = "none";
     });
   </script>
+
+  <!-- ✅ STREAK SCRIPT (TIENE que ir antes de cerrar body) -->
+  <script>
+    const STREAK_KEY = "DAY_STREAK_V1";
+
+    function dayNumberLocal() {
+      const d = new Date();
+      return Math.floor(new Date(d.getFullYear(), d.getMonth(), d.getDate()).getTime() / 86400000);
+    }
+
+    function loadStreak() {
+      try { return JSON.parse(localStorage.getItem(STREAK_KEY) || "{}"); }
+      catch (e) { return {}; }
+    }
+
+    function saveStreak(data) {
+      localStorage.setItem(STREAK_KEY, JSON.stringify(data));
+    }
+
+    function updateStreakUI(count) {
+      const el = document.getElementById("streakText");
+      if (!el) return;
+      el.textContent = count <= 1 ? "1 day streak ✨" : `${count} day streak ✨`;
+    }
+
+    function computeStreak() {
+      const today = dayNumberLocal();
+      const data = loadStreak();
+
+      const lastDay = Number.isFinite(data.lastDay) ? data.lastDay : null;
+      let count = Number.isFinite(data.count) ? data.count : 0;
+
+      if (lastDay === null) count = 1;
+      else if (today === lastDay) {} // same day
+      else if (today === lastDay + 1) count = count + 1;
+      else count = 1;
+
+      saveStreak({ lastDay: today, count });
+      updateStreakUI(count);
+    }
+
+    computeStreak();
+  </script>
 </body>
 </html>
-<script>
-  // ======= STREAK (localStorage) =======
-  const STREAK_KEY = "DAY_STREAK_V1";
-
-  function dayNumberLocal() {
-    const d = new Date();
-    // día estable en horario local (más intuitivo para streak)
-    return Math.floor(new Date(d.getFullYear(), d.getMonth(), d.getDate()).getTime() / 86400000);
-  }
-
-  function loadStreak() {
-    try {
-      return JSON.parse(localStorage.getItem(STREAK_KEY) || "{}");
-    } catch (e) {
-      return {};
-    }
-  }
-
-  function saveStreak(data) {
-    localStorage.setItem(STREAK_KEY, JSON.stringify(data));
-  }
-
-  function updateStreakUI(count) {
-    const el = document.getElementById("streakText");
-    if (!el) return;
-
-    if (count <= 1) {
-      el.textContent = "1 day streak ✨";
-    } else {
-      el.textContent = `${count} day streak ✨`;
-    }
-  }
-
-  function computeStreak() {
-    const today = dayNumberLocal();
-    const data = loadStreak();
-
-    const lastDay = Number.isFinite(data.lastDay) ? data.lastDay : null;
-    let count = Number.isFinite(data.count) ? data.count : 0;
-
-    if (lastDay === null) {
-      // first time ever
-      count = 1;
-    } else if (today === lastDay) {
-      // already counted today
-      // keep count
-    } else if (today === lastDay + 1) {
-      // consecutive day
-      count = count + 1;
-    } else {
-      // missed at least one day
-      count = 1;
-    }
-
-    const newData = { lastDay: today, count };
-    saveStreak(newData);
-    updateStreakUI(count);
-  }
-
-  // Run on app open
-  computeStreak();
-</script>
