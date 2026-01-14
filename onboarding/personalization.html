@@ -24,7 +24,7 @@
   }
 
   // Toggle SOLO Themes (los botones del grid)
-  document.querySelectorAll('.grid button').forEach(btn=>{
+  document.querySelectorAll('button.rounded-2xl').forEach(btn=>{
     const label = btn.querySelector("span");
     const icon = btn.querySelector(".material-symbols-outlined");
     if(!label || !icon) return;
@@ -87,4 +87,18 @@
     startBtn.addEventListener("click", finishOnboarding);
   }
 })();
+</script>
+<script>
+  const AUTHORS_KEY = "day_selected_authors_v1";
+
+  document.querySelectorAll('.cursor-pointer').forEach(card => {
+    card.addEventListener("click", () => {
+      card.classList.toggle("author-selected");
+
+      const selected = Array.from(document.querySelectorAll(".author-selected span:last-child"))
+        .map(span => span.textContent.trim());
+
+      localStorage.setItem(AUTHORS_KEY, JSON.stringify(selected));
+    });
+  });
 </script>
